@@ -47,3 +47,9 @@ Port 5173 is in use, trying another one...
 [2m8:42:54 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
 [2m8:43:28 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ new dependencies optimized: [33mrecharts[32m[39m
 [2m8:43:28 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ optimized dependencies changed. reloading[39m
+[2m9:09:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:09:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m9:12:45 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:12:45 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/context/AuthContext.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/App.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/Portfolio.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/components/MarketRow.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/components/NewsList.tsx[22m
+[2m9:13:06 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:13:06 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/App.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/Portfolio.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/components/MarketRow.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m

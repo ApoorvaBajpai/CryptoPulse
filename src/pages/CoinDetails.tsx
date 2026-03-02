@@ -203,8 +203,8 @@ export default function CoinDetails() {
                                     key={d}
                                     onClick={() => setChartDays(d)}
                                     className={`px-3 py-1 rounded-md text-xs font-semibold transition ${chartDays === d
-                                            ? "bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-400 shadow-sm"
-                                            : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                                        ? "bg-white dark:bg-gray-600 text-indigo-600 dark:text-indigo-400 shadow-sm"
+                                        : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                                         }`}
                                 >
                                     {d === "1" ? "24H" : d === "7" ? "7D" : d === "30" ? "30D" : "90D"}
@@ -271,7 +271,7 @@ export default function CoinDetails() {
                                             fontSize: '12px',
                                         }}
                                         labelFormatter={(t) => new Date(t).toLocaleString()}
-                                        formatter={(value: number) => [`$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'Price']}
+                                        formatter={(value: number | undefined) => [`$${(value ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'Price']}
                                     />
                                     <Area
                                         type="monotone"

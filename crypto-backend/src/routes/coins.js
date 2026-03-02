@@ -1,17 +1,21 @@
 const express = require("express");
 const axios = require("axios");
 const authMiddleware = require("../../middleware/authMiddleware");
+const { coinsCache, chartCache } = require("../services/cacheService");
 
 const router = express.Router();
-
-let cachedData = null;
-let cacheTime = 0;
-const CACHE_DURATION = 30 * 1000;
 
 
 /* Listing API */
 router.get("/api/listings", async (req, res) => {
     try {
+        const cacheKey = "listings:raw";
+        const cached = coinsCache.get(cacheKey);
+        if (cached) {
+            res.set("X-Cache", "HIT");
+            return res.json(cached);
+        }
+
         const response = await axios.get(
             "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
             {
@@ -29,6 +33,8 @@ router.get("/api/listings", async (req, res) => {
             }
         );
 
+        coinsCache.set(cacheKey, response.data, 30 * 1000);
+        res.set("X-Cache", "MISS");
         res.json(response.data);
     } catch (err) {
         res.status(500).json({
@@ -42,6 +48,12 @@ router.get("/api/listings", async (req, res) => {
 router.get("/info/:id", async (req, res) => {
     try {
         const { id } = req.params;
+        const cacheKey = `info:${id}`;
+        const cached = coinsCache.get(cacheKey);
+        if (cached) {
+            res.set("X-Cache", "HIT");
+            return res.json(cached);
+        }
 
         const response = await axios.get(
             "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info",
@@ -54,6 +66,8 @@ router.get("/info/:id", async (req, res) => {
             }
         );
 
+        coinsCache.set(cacheKey, response.data, 60 * 1000); // 1 minute
+        res.set("X-Cache", "MISS");
         res.json(response.data);
     } catch (err) {
         res.status(500).json({
@@ -70,107 +84,93 @@ router.get("/listings-with-info", authMiddleware, async (req, res) => {
         const sort = req.query.sort || "market_cap";
         const order = req.query.order || "desc";
 
-        const now = Date.now();
+        // Cache the base (unfiltered) merged data
+        const baseCacheKey = "listings-with-info:base";
+        let merged = coinsCache.get(baseCacheKey);
 
-        if (cachedData && now - cacheTime < CACHE_DURATION) {
-            let data = [...cachedData];
+        if (merged) {
+            res.set("X-Cache", "HIT");
+        } else {
+            res.set("X-Cache", "MISS");
 
-            if (filter === "stable") {
-                data = data.filter(c =>
-                    ["USDT", "USDC", "DAI", "BUSD"].includes(c.symbol)
-                );
-            }
+            const listingsRes = await axios.get(
+                "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
+                {
+                    headers: {
+                        "X-CMC_PRO_API_KEY": process.env.CMC_API_KEY,
+                        Accept: "application/json"
+                    },
+                    params: {
+                        start: 1,
+                        limit: 50,
+                        sort,
+                        sort_dir: order
+                    }
+                }
+            );
 
-            if (filter === "layer1") {
-                data = data.filter(c =>
-                    ["BTC", "ETH", "SOL", "ADA", "AVAX", "DOT"].includes(c.symbol)
-                );
-            }
+            const ids = listingsRes.data.data.map(c => c.id).join(",");
 
-            if (filter === "alt") {
-                data = data.filter(c =>
-                    c.symbol !== "BTC" && c.symbol !== "ETH"
-                );
-            }
+            const infoRes = await axios.get(
+                "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info",
+                {
+                    headers: {
+                        "X-CMC_PRO_API_KEY": process.env.CMC_API_KEY,
+                        Accept: "application/json"
+                    },
+                    params: { id: ids }
+                }
+            );
 
-            if (sort && sort !== "rank") {
-                data.sort((a, b) => {
-                    if (order === "asc") return a[sort] - b[sort];
-                    return b[sort] - a[sort];
-                });
-            }
+            const infoMap = infoRes.data.data;
 
-            return res.json(data);
+            merged = listingsRes.data.data.map(coin => ({
+                id: coin.id,
+                name: coin.name,
+                symbol: coin.symbol,
+                price: coin.quote.USD.price,
+                percent_change_24h: coin.quote.USD.percent_change_24h,
+                market_cap: coin.quote.USD.market_cap,
+                volume_24h: coin.quote.USD.volume_24h,
+                logo: infoMap[coin.id]?.logo || null,
+                tags: coin.tags || []
+            }));
+
+            // Store the unfiltered base data
+            coinsCache.set(baseCacheKey, merged, 30 * 1000);
         }
 
-        const listingsRes = await axios.get(
-            "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest",
-            {
-                headers: {
-                    "X-CMC_PRO_API_KEY": process.env.CMC_API_KEY,
-                    Accept: "application/json"
-                },
-                params: {
-                    start: 1,
-                    limit: 50,
-                    sort,
-                    sort_dir: order
-                }
+        // Apply filters on a copy of the cached base data
+        let data = [...merged];
 
-            }
-        );
-
-        const ids = listingsRes.data.data.map(c => c.id).join(",");
-
-        const infoRes = await axios.get(
-            "https://pro-api.coinmarketcap.com/v2/cryptocurrency/info",
-            {
-                headers: {
-                    "X-CMC_PRO_API_KEY": process.env.CMC_API_KEY,
-                    Accept: "application/json"
-                },
-                params: { id: ids }
-            }
-        );
-
-        const infoMap = infoRes.data.data;
-
-        let merged = listingsRes.data.data.map(coin => ({
-            id: coin.id,
-            name: coin.name,
-            symbol: coin.symbol,
-            price: coin.quote.USD.price,
-            percent_change_24h: coin.quote.USD.percent_change_24h,
-            market_cap: coin.quote.USD.market_cap,
-            volume_24h: coin.quote.USD.volume_24h,
-            logo: infoMap[coin.id]?.logo || null,
-            tags: coin.tags || []
-        }));
-
-        // ✅ SAVE BASE DATA (UNFILTERED)
-        cachedData = [...merged];
-        cacheTime = Date.now();
-
-        // 🔽 APPLY FILTERS AFTER CACHE
         if (filter === "stable") {
-            merged = merged.filter(c =>
+            data = data.filter(c =>
                 ["USDT", "USDC", "DAI", "BUSD"].includes(c.symbol)
             );
         }
 
         if (filter === "layer1") {
-            merged = merged.filter(c =>
+            data = data.filter(c =>
                 ["BTC", "ETH", "SOL", "ADA", "AVAX", "DOT"].includes(c.symbol)
             );
         }
 
         if (filter === "alt") {
-            merged = merged.filter(c =>
+            data = data.filter(c =>
                 c.symbol !== "BTC" && c.symbol !== "ETH"
             );
         }
 
-        res.json(merged);
+        if (sort && sort !== "rank") {
+            data.sort((a, b) => {
+                if (order === "asc") return a[sort] - b[sort];
+                return b[sort] - a[sort];
+            });
+        }
+
+        // Set Cache-Control for browsers  
+        res.set("Cache-Control", "public, max-age=30, stale-while-revalidate=60");
+        res.json(data);
 
     } catch (err) {
         res.status(500).json({
@@ -184,6 +184,14 @@ router.get("/listings-with-info", authMiddleware, async (req, res) => {
 router.get("/:id/details", async (req, res) => {
     try {
         const { id } = req.params;
+        const cacheKey = `details:${id}`;
+        const cached = coinsCache.get(cacheKey);
+
+        if (cached) {
+            res.set("X-Cache", "HIT");
+            res.set("Cache-Control", "public, max-age=30, stale-while-revalidate=60");
+            return res.json(cached);
+        }
 
         // 1️⃣ Fetch coin info
         const infoRes = await axios.get(
@@ -212,8 +220,8 @@ router.get("/:id/details", async (req, res) => {
         const info = infoRes.data.data[id];
         const quote = quoteRes.data.data[id].quote.USD;
 
-        // 3️⃣ Send clean response
-        res.json({
+        // 3️⃣ Build clean response
+        const result = {
             id,
             name: info.name,
             symbol: info.symbol,
@@ -226,7 +234,12 @@ router.get("/:id/details", async (req, res) => {
             percent_change_7d: quote.percent_change_7d,
             market_cap: quote.market_cap,
             volume_24h: quote.volume_24h,
-        });
+        };
+
+        coinsCache.set(cacheKey, result, 30 * 1000);
+        res.set("X-Cache", "MISS");
+        res.set("Cache-Control", "public, max-age=30, stale-while-revalidate=60");
+        res.json(result);
     } catch (err) {
         res.status(500).json({
             error: "Failed to fetch coin details",
@@ -256,21 +269,22 @@ const SYMBOL_TO_COINGECKO = {
     KAS: "kaspa", TAO: "bittensor", FET: "fetch-ai",
 };
 
-let geckoListCache = null;
-let geckoListCacheTime = 0;
 const GECKO_LIST_TTL = 24 * 60 * 60 * 1000;
 
 async function getGeckoId(symbol) {
     const upper = symbol.toUpperCase();
     if (SYMBOL_TO_COINGECKO[upper]) return SYMBOL_TO_COINGECKO[upper];
     try {
-        const now = Date.now();
-        if (!geckoListCache || now - geckoListCacheTime > GECKO_LIST_TTL) {
-            const listRes = await axios.get("https://api.coingecko.com/api/v3/coins/list");
-            geckoListCache = listRes.data;
-            geckoListCacheTime = now;
-        }
-        const match = geckoListCache.find(c => c.symbol.toUpperCase() === upper);
+        // Use chartCache for the CoinGecko coins list (long TTL)
+        const geckoList = await chartCache.getOrSet(
+            "gecko:coins-list",
+            async () => {
+                const listRes = await axios.get("https://api.coingecko.com/api/v3/coins/list");
+                return listRes.data;
+            },
+            GECKO_LIST_TTL
+        );
+        const match = geckoList.find(c => c.symbol.toUpperCase() === upper);
         return match ? match.id : null;
     } catch {
         return null;
@@ -281,6 +295,14 @@ router.get("/:id/chart", authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const days = req.query.days || "7";
+        const cacheKey = `chart:${id}:${days}`;
+
+        const cached = chartCache.get(cacheKey);
+        if (cached) {
+            res.set("X-Cache", "HIT");
+            res.set("Cache-Control", "public, max-age=120, stale-while-revalidate=300");
+            return res.json(cached);
+        }
 
         const infoRes = await axios.get(
             "https://pro-api.coinmarketcap.com/v1/cryptocurrency/info",
@@ -312,7 +334,15 @@ router.get("/:id/chart", authMiddleware, async (req, res) => {
             price: parseFloat(price.toFixed(2)),
         }));
 
-        res.json({ symbol, days, prices });
+        const result = { symbol, days, prices };
+
+        // Chart TTL varies by time range
+        const chartTTLs = { "1": 60 * 1000, "7": 2 * 60 * 1000, "30": 5 * 60 * 1000, "90": 10 * 60 * 1000 };
+        chartCache.set(cacheKey, result, chartTTLs[days] || 2 * 60 * 1000);
+
+        res.set("X-Cache", "MISS");
+        res.set("Cache-Control", `public, max-age=${(chartTTLs[days] || 120000) / 1000}, stale-while-revalidate=300`);
+        res.json(result);
     } catch (err) {
         res.status(500).json({
             error: "Failed to fetch chart data",
