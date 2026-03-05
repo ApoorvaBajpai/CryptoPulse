@@ -2,6 +2,7 @@ const request = require("supertest");
 const express = require("express");
 const axios = require("axios");
 const coinsRoutes = require("../routes/coins");
+const { coinsCache } = require("../services/cacheService");
 
 jest.mock("axios");
 
@@ -15,8 +16,7 @@ app.use("/api/coins", coinsRoutes);
 describe("Coins API Unit Tests", () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        // Reset cachedData in coins.js if possible, but it's module-scoped.
-        // We might need to handle cache in tests.
+        coinsCache.clear();
     });
 
     test("GET /api/coins/api/listings - should fetch listings", async () => {
@@ -83,60 +83,108 @@ describe("Coins API Unit Tests", () => {
     });
 
     test("GET /api/coins/listings-with-info - should use cache on second call", async () => {
-        // Since cachedData is module-scoped, the previous test already populated it.
+        const mockListings = {
+            data: {
+                data: [
+                    { id: 1, name: "Bitcoin", symbol: "BTC", quote: { USD: { price: 50000, percent_change_24h: 1, market_cap: 1000000, volume_24h: 100000 } } },
+                    { id: 2, name: "Ethereum", symbol: "ETH", quote: { USD: { price: 3000, percent_change_24h: 2, market_cap: 500000, volume_24h: 50000 } } }
+                ]
+            }
+        };
+        const mockInfo = { data: { data: { 1: { logo: "btc-logo.png" }, 2: { logo: "eth-logo.png" } } } };
+
+        axios.get.mockResolvedValueOnce(mockListings).mockResolvedValueOnce(mockInfo);
+
+        // First call populates the cache
+        await request(app).get("/api/coins/listings-with-info");
+        jest.clearAllMocks();
+
+        // Second call should use cache
         const res = await request(app).get("/api/coins/listings-with-info");
 
         expect(res.statusCode).toBe(200);
-        expect(axios.get).not.toHaveBeenCalled(); // Should not call axios because of cache
+        expect(axios.get).not.toHaveBeenCalled();
     });
 
     test("GET /api/coins/listings-with-info - should apply filters from cache (stable)", async () => {
+        const mockListings = {
+            data: {
+                data: [
+                    { id: 1, name: "Bitcoin", symbol: "BTC", quote: { USD: { price: 50000, percent_change_24h: 1, market_cap: 1000000, volume_24h: 100000 } } },
+                    { id: 2, name: "Ethereum", symbol: "ETH", quote: { USD: { price: 3000, percent_change_24h: 2, market_cap: 500000, volume_24h: 50000 } } }
+                ]
+            }
+        };
+        const mockInfo = { data: { data: { 1: { logo: "btc-logo.png" }, 2: { logo: "eth-logo.png" } } } };
+        axios.get.mockResolvedValueOnce(mockListings).mockResolvedValueOnce(mockInfo);
+
         const res = await request(app).get("/api/coins/listings-with-info").query({ filter: "stable" });
         expect(res.statusCode).toBe(200);
         expect(res.body).toHaveLength(0); // BTC/ETH are not stablecoins
     });
 
     test("GET /api/coins/listings-with-info - should apply filters from cache (layer1)", async () => {
+        const mockListings = {
+            data: {
+                data: [
+                    { id: 1, name: "Bitcoin", symbol: "BTC", quote: { USD: { price: 50000, percent_change_24h: 1, market_cap: 1000000, volume_24h: 100000 } } },
+                    { id: 2, name: "Ethereum", symbol: "ETH", quote: { USD: { price: 3000, percent_change_24h: 2, market_cap: 500000, volume_24h: 50000 } } }
+                ]
+            }
+        };
+        const mockInfo = { data: { data: { 1: { logo: "btc-logo.png" }, 2: { logo: "eth-logo.png" } } } };
+        axios.get.mockResolvedValueOnce(mockListings).mockResolvedValueOnce(mockInfo);
+
         const res = await request(app).get("/api/coins/listings-with-info").query({ filter: "layer1" });
         expect(res.statusCode).toBe(200);
         expect(res.body.length).toBeGreaterThan(0);
     });
 
     test("GET /api/coins/listings-with-info - should apply filters from cache (alt)", async () => {
+        const mockListings = {
+            data: {
+                data: [
+                    { id: 1, name: "Bitcoin", symbol: "BTC", quote: { USD: { price: 50000, percent_change_24h: 1, market_cap: 1000000, volume_24h: 100000 } } },
+                    { id: 2, name: "Ethereum", symbol: "ETH", quote: { USD: { price: 3000, percent_change_24h: 2, market_cap: 500000, volume_24h: 50000 } } }
+                ]
+            }
+        };
+        const mockInfo = { data: { data: { 1: { logo: "btc-logo.png" }, 2: { logo: "eth-logo.png" } } } };
+        axios.get.mockResolvedValueOnce(mockListings).mockResolvedValueOnce(mockInfo);
+
         const res = await request(app).get("/api/coins/listings-with-info").query({ filter: "alt" });
         expect(res.statusCode).toBe(200);
         expect(res.body.find(c => c.symbol === "BTC")).toBeUndefined();
     });
 
     test("GET /api/coins/listings-with-info - should apply sorting (price asc)", async () => {
+        const mockListings = {
+            data: {
+                data: [
+                    { id: 1, name: "Bitcoin", symbol: "BTC", quote: { USD: { price: 50000, percent_change_24h: 1, market_cap: 1000000, volume_24h: 100000 } } },
+                    { id: 2, name: "Ethereum", symbol: "ETH", quote: { USD: { price: 3000, percent_change_24h: 2, market_cap: 500000, volume_24h: 50000 } } }
+                ]
+            }
+        };
+        const mockInfo = { data: { data: { 1: { logo: "btc-logo.png" }, 2: { logo: "eth-logo.png" } } } };
+        axios.get.mockResolvedValueOnce(mockListings).mockResolvedValueOnce(mockInfo);
+
         const res = await request(app).get("/api/coins/listings-with-info").query({ sort: "price", order: "asc" });
         expect(res.statusCode).toBe(200);
         expect(res.body[0].price).toBeLessThan(res.body[1].price);
     });
 
     test("GET /api/coins/listings-with-info - should handle merge failure", async () => {
-        // We need to bypass the cache to trigger a new fetch
-        // Since we can't easily clear the cache in coins.js without exports, 
-        // we'll rely on the fact that we can't easily test this unless we wait or mock Date.now
-        // But let's try to trigger the catch block by mocking axios failure if possible 
-        // (but cache hit will take precedence).
-        // For 100% coverage of coins.js we might need to export a resetCache function or use a more complex setup.
-        // However, we can at least cover the details error.
+        // Empty test — kept for coverage structure
     });
 
     test("GET /api/coins/listings-with-info - should return 500 on merge failure", async () => {
-        // Mocking Date.now to expire cache
-        const realDateNow = Date.now;
-        global.Date.now = jest.fn(() => realDateNow() + 1000000);
-
         axios.get.mockRejectedValue(new Error("Merge error"));
 
         const res = await request(app).get("/api/coins/listings-with-info");
 
         expect(res.statusCode).toBe(500);
         expect(res.body.error).toBe("Failed to merge coin data");
-
-        global.Date.now = realDateNow;
     });
 
     test("GET /api/coins/:id/details - should fetch coin details", async () => {

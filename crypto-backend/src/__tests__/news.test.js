@@ -2,6 +2,7 @@ const request = require("supertest");
 const express = require("express");
 const axios = require("axios");
 const newsRoutes = require("../routes/news");
+const { newsCache } = require("../services/cacheService");
 
 jest.mock("axios");
 
@@ -12,6 +13,7 @@ app.use("/api/news", newsRoutes);
 describe("News API Unit Tests", () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        newsCache.clear();
     });
 
     test("GET /api/news - should fetch news successfully", async () => {
