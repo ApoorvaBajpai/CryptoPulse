@@ -1,9 +1,15 @@
+// Mock firebaseAdmin BEFORE importing authMiddleware
+// authMiddleware.js requires ../config/firebaseAdmin which tries to load
+// firebase-service-account.json (gitignored, absent in CI).
+// Jest hoists jest.mock() calls, so the mock intercepts the require chain.
+jest.mock("../../config/firebaseAdmin", () => ({
+    auth: jest.fn()
+}));
+jest.mock("../models/Portfolio");
+
 const authMiddleware = require("../../middleware/authMiddleware");
 const Portfolio = require("../models/Portfolio");
 const admin = require("../../config/firebaseAdmin");
-
-jest.mock("../models/Portfolio");
-jest.mock("../../config/firebaseAdmin");
 
 describe("Auth Middleware Tests", () => {
     let req, res, next;
