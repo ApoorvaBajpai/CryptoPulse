@@ -1,0 +1,6 @@
+
+> crypto-backend@1.0.0 test
+> jest --coverage
+
+'jest' is not recognized as an internal or external command,
+operable program or batch file.

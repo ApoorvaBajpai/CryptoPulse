@@ -41,9 +41,6 @@ export default function NewsPage() {
                         >
                             Market
                         </button>
-                        <button className="px-6 py-2 bg-white border rounded-xl shadow-sm font-medium hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                            Categories
-                        </button>
                         <button
                             onClick={() => navigate("/portfolio")}
                             className={`px-6 py-2 rounded-xl shadow-sm font-medium transition ${window.location.pathname === '/portfolio' ? 'bg-indigo-600 text-white' : 'bg-white border hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700'}`}

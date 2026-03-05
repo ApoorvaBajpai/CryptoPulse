@@ -101,4 +101,157 @@ describe("Portfolio Unit Tests", () => {
         expect(mockPortfolio.holdings).toHaveLength(0);
         expect(mockPortfolio.save).toHaveBeenCalled();
     });
+
+    // 5. GET user portfolio
+    test("GET /api/portfolio - should return user portfolio", async () => {
+        const mockPortfolio = { uid: "test-user-123", holdings: [] };
+        Portfolio.findOne.mockResolvedValue(mockPortfolio);
+
+        const res = await request(app).get("/api/portfolio");
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.uid).toBe("test-user-123");
+    });
+
+    test("GET /api/portfolio - should return 404 if portfolio not found", async () => {
+        Portfolio.findOne.mockResolvedValue(null);
+
+        const res = await request(app).get("/api/portfolio");
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("Portfolio not found");
+    });
+
+    // 6. BUY coins error cases
+    test("POST /api/portfolio/buy - should return 400 if missing fields", async () => {
+        const res = await request(app)
+            .post("/api/portfolio/buy")
+            .send({ coinId: "bitcoin" });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("Missing required fields");
+    });
+
+    test("POST /api/portfolio/buy - should return 404 if portfolio not found", async () => {
+        Portfolio.findOne.mockResolvedValue(null);
+
+        const res = await request(app)
+            .post("/api/portfolio/buy")
+            .send({ coinId: "bitcoin", symbol: "BTC", quantity: 1, price: 60000 });
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("Portfolio not found");
+    });
+
+    // 7. SELL coins error cases
+    test("POST /api/portfolio/sell - should return 400 if missing fields", async () => {
+        const res = await request(app)
+            .post("/api/portfolio/sell")
+            .send({ coinId: "bitcoin" });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("Missing required fields");
+    });
+
+    test("POST /api/portfolio/sell - should return 404 if portfolio not found", async () => {
+        Portfolio.findOne.mockResolvedValue(null);
+
+        const res = await request(app)
+            .post("/api/portfolio/sell")
+            .send({ coinId: "bitcoin", quantity: 1 });
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("Portfolio not found");
+    });
+
+    test("POST /api/portfolio/sell - should return 400 if coin not found in portfolio", async () => {
+        const mockPortfolio = {
+            uid: "test-user-123",
+            holdings: [],
+            save: jest.fn().mockResolvedValue(true),
+        };
+        Portfolio.findOne.mockResolvedValue(mockPortfolio);
+
+        const res = await request(app)
+            .post("/api/portfolio/sell")
+            .send({ coinId: "bitcoin", quantity: 1 });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("Coin not found in portfolio");
+    });
+
+    test("POST /api/portfolio/sell - should return 400 if insufficient quantity", async () => {
+        const mockPortfolio = {
+            uid: "test-user-123",
+            holdings: [{ coinId: "bitcoin", quantity: 0.5 }],
+            save: jest.fn().mockResolvedValue(true),
+        };
+        Portfolio.findOne.mockResolvedValue(mockPortfolio);
+
+        const res = await request(app)
+            .post("/api/portfolio/sell")
+            .send({ coinId: "bitcoin", quantity: 1 });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toBe("Insufficient quantity");
+    });
+
+    // 8. REMOVE coin
+    test("DELETE /api/portfolio/remove/:coinId - should remove coin from holdings", async () => {
+        const mockPortfolio = {
+            uid: "test-user-123",
+            holdings: [{ coinId: "bitcoin", quantity: 2 }],
+            save: jest.fn().mockResolvedValue(true),
+        };
+        Portfolio.findOne.mockResolvedValue(mockPortfolio);
+
+        const res = await request(app).delete("/api/portfolio/remove/bitcoin");
+
+        expect(res.statusCode).toBe(200);
+        expect(mockPortfolio.holdings).toHaveLength(0);
+        expect(mockPortfolio.save).toHaveBeenCalled();
+    });
+
+    test("DELETE /api/portfolio/remove/:coinId - should return 404 if portfolio not found", async () => {
+        Portfolio.findOne.mockResolvedValue(null);
+
+        const res = await request(app).delete("/api/portfolio/remove/bitcoin");
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("Portfolio not found");
+    });
+
+    // 9. CLEAR portfolio
+    test("DELETE /api/portfolio/clear - should clear all holdings", async () => {
+        const mockPortfolio = {
+            uid: "test-user-123",
+            holdings: [{ coinId: "bitcoin", quantity: 2 }],
+            save: jest.fn().mockResolvedValue(true),
+        };
+        Portfolio.findOne.mockResolvedValue(mockPortfolio);
+
+        const res = await request(app).delete("/api/portfolio/clear");
+
+        expect(res.statusCode).toBe(200);
+        expect(mockPortfolio.holdings).toHaveLength(0);
+    });
+
+    test("DELETE /api/portfolio/clear - should return 404 if portfolio not found", async () => {
+        Portfolio.findOne.mockResolvedValue(null);
+
+        const res = await request(app).delete("/api/portfolio/clear");
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toBe("Portfolio not found");
+    });
+
+    // 10. Exception handling
+    test("GET /api/portfolio - should return 500 on fetch failure", async () => {
+        Portfolio.findOne.mockRejectedValue(new Error("Database error"));
+
+        const res = await request(app).get("/api/portfolio");
+
+        expect(res.statusCode).toBe(500);
+        expect(res.body.message).toBe("Failed to fetch portfolio");
+    });
 });

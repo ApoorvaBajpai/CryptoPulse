@@ -1,0 +1,80 @@
+
+Running 6 tests using 1 worker
+
+  ok 1 [chromium] › tests\app.spec.ts:13:5 › Crypto Pulse App Tests › 1. Should show login page by default (2.2s)
+  ok 2 [chromium] › tests\app.spec.ts:19:5 › Crypto Pulse App Tests › 2. Should toggle between login and signup (1.8s)
+  ok 3 [chromium] › tests\app.spec.ts:29:5 › Crypto Pulse App Tests › 3. Should show error on invalid login (3.5s)
+  x  4 [chromium] › tests\app.spec.ts:40:5 › Crypto Pulse App Tests › 4. Should login successfully with provided credentials (30.1s)
+  x  5 [chromium] › tests\app.spec.ts:53:5 › Crypto Pulse App Tests › 5. Should navigate to Portfolio page (30.0s)
+  x  6 [chromium] › tests\app.spec.ts:69:5 › Crypto Pulse App Tests › 6. Should navigate to News page (30.1s)
+
+
+  1) [chromium] › tests\app.spec.ts:40:5 › Crypto Pulse App Tests › 4. Should login successfully with provided credentials 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "http://localhost:5174/" until "load"
+    ============================================================
+
+      44 |
+      45 |         // After login, it should navigate to home "/"
+    > 46 |         await page.waitForURL('http://localhost:5174/');
+         |                    ^
+      47 |         await expect(page).toHaveURL('http://localhost:5174/');
+      48 |
+      49 |         // Check if Market header is visible
+        at c:\Users\apoor\crypto-pulse\tests\app.spec.ts:46:20
+
+    Error Context: test-results\app-Crypto-Pulse-App-Tests-62883-y-with-provided-credentials-chromium\error-context.md
+
+  2) [chromium] › tests\app.spec.ts:53:5 › Crypto Pulse App Tests › 5. Should navigate to Portfolio page 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "http://localhost:5174/" until "load"
+    ============================================================
+
+      56 |         await page.fill('input[type="password"]', TEST_PASSWORD);
+      57 |         await page.click('button:has-text("Login")');
+    > 58 |         await page.waitForURL('http://localhost:5174/');
+         |                    ^
+      59 |
+      60 |         // Click Portfolio nav button
+      61 |         await page.click('button:has-text("Portfolio")');
+        at c:\Users\apoor\crypto-pulse\tests\app.spec.ts:58:20
+
+    Error Context: test-results\app-Crypto-Pulse-App-Tests-deaaa--navigate-to-Portfolio-page-chromium\error-context.md
+
+  3) [chromium] › tests\app.spec.ts:69:5 › Crypto Pulse App Tests › 6. Should navigate to News page 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: page.waitForURL: Test timeout of 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for navigation to "http://localhost:5174/" until "load"
+    ============================================================
+
+      72 |         await page.fill('input[type="password"]', TEST_PASSWORD);
+      73 |         await page.click('button:has-text("Login")');
+    > 74 |         await page.waitForURL('http://localhost:5174/');
+         |                    ^
+      75 |
+      76 |         // Click News nav button
+      77 |         await page.click('button:has-text("News")');
+        at c:\Users\apoor\crypto-pulse\tests\app.spec.ts:74:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\app-Crypto-Pulse-App-Tests-6-Should-navigate-to-News-page-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\app-Crypto-Pulse-App-Tests-6-Should-navigate-to-News-page-chromium\error-context.md
+
+  3 failed
+    [chromium] › tests\app.spec.ts:40:5 › Crypto Pulse App Tests › 4. Should login successfully with provided credentials 
+    [chromium] › tests\app.spec.ts:53:5 › Crypto Pulse App Tests › 5. Should navigate to Portfolio page 
+    [chromium] › tests\app.spec.ts:69:5 › Crypto Pulse App Tests › 6. Should navigate to News page ─
+  3 passed (2.0m)

@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import Header from "../components/Header"; // I noticed Header was missing in Portfolio but maybe it should be there?
 
 
+import { getMarketPrices } from "../api/market";
+
 type Holding = {
   coinId: string;
   symbol: string;
@@ -38,17 +40,10 @@ export default function Portfolio() {
     }
   }, [darkMode]);
 
-  // 1. Initial State from Cache (Optimistic Loading)
-  const [portfolio, setPortfolio] = useState<PortfolioData | null>(() => {
-    const saved = localStorage.getItem("crypto_portfolio_cache");
-    return saved ? JSON.parse(saved) : null;
-  });
-  const [priceMap, setPriceMap] = useState<Record<string, number>>(() => {
-    const saved = localStorage.getItem("crypto_prices_cache");
-    return saved ? JSON.parse(saved) : {};
-  });
+  const [portfolio, setPortfolio] = useState<PortfolioData | null>(null);
+  const [priceMap, setPriceMap] = useState<Record<string, number>>({});
 
-  const [loading, setLoading] = useState(!portfolio); // Only show loading if NO cache
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [reload, setReload] = useState(false);
 
@@ -72,13 +67,8 @@ export default function Portfolio() {
         setIsStale(false);
         const data = await getPortfolio();
         setPortfolio(data);
-        localStorage.setItem("crypto_portfolio_cache", JSON.stringify(data));
       } catch (err: any) {
-        if (portfolio) {
-          setIsStale(true);
-        } else {
-          setError(err.message || "Failed to load portfolio");
-        }
+        setError(err.message || "Failed to load portfolio");
         console.error("Portfolio fetch failed:", err);
       } finally {
         setLoading(false);
@@ -91,27 +81,18 @@ export default function Portfolio() {
   useEffect(() => {
     if (!user) return;
     const loadPrices = async () => {
-      const token = await user?.getIdToken();
-      if (!token) return;
       try {
-        const res = await fetch(
-          "http://localhost:5000/api/coins/listings-with-info",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const data = await res.json();
+        const data = await getMarketPrices();
         const map: Record<string, number> = {};
         data.forEach((c: any) => { map[c.symbol] = c.price; });
         setPriceMap(map);
-        localStorage.setItem("crypto_prices_cache", JSON.stringify(map));
       } catch (err) {
         setIsStale(true);
         console.error("Price fetch failed:", err);
       }
     };
     loadPrices();
-  }, [user]);
+  }, [user, reload]); // Added reload here to refresh prices when buy/sell happens since it clears cache
 
   const handleAction = async (coin: Holding) => {
     if (!activeAction || actionLoading) return;
@@ -219,9 +200,6 @@ export default function Portfolio() {
           >
             Market
           </button>
-          <button className="px-6 py-2 bg-white border rounded-xl shadow-sm font-medium hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-            Categories
-          </button>
           <button
             onClick={() => navigate("/portfolio")}
             className={`px-6 py-2 rounded-xl shadow-sm font-medium transition ${window.location.pathname === '/portfolio' ? 'bg-indigo-600 text-white' : 'bg-white border hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700'}`}
@@ -271,7 +249,7 @@ export default function Portfolio() {
                 <span className={`text-xl font-bold ${profitLoss >= 0 ? "text-green-600" : "text-red-500"}`}>
                   {profitLoss >= 0 ? "+" : "-"}{format(Math.abs(profitLoss))}
                 </span>
-                <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${profitLoss >= 0 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-500"}`}>
+                <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${profitLoss >= 0 ? "bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400" : "bg-red-50 dark:bg-red-900/20 text-red-500 dark:text-red-400"}`}>
                   {plPercent.toFixed(2)}%
                 </span>
               </div>
@@ -354,13 +332,13 @@ export default function Portfolio() {
                             <div className="flex gap-2">
                               <button
                                 onClick={() => { setActiveAction({ id: coin.coinId, type: 'buy' }); setActionQty("1"); }}
-                                className="px-3 py-1.5 rounded-xl border border-indigo-100 text-indigo-600 text-xs font-bold hover:bg-indigo-50 transition"
+                                className="px-3 py-1.5 rounded-xl border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-xs font-bold hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition"
                               >
                                 Buy More
                               </button>
                               <button
                                 onClick={() => { setActiveAction({ id: coin.coinId, type: 'sell' }); setActionQty(coin.quantity.toString()); }}
-                                className="px-3 py-1.5 rounded-xl border border-red-100 text-red-500 text-xs font-bold hover:bg-red-50 transition"
+                                className="px-3 py-1.5 rounded-xl border border-red-100 dark:border-red-800 text-red-500 dark:text-red-400 text-xs font-bold hover:bg-red-50 dark:hover:bg-red-900/30 transition"
                               >
                                 Sell
                               </button>

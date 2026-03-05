@@ -1,0 +1,59 @@
+
+> crypto-pulse@0.0.0 dev
+> vite 
+
+[2m8:46:55 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because lockfile has changed
+Port 5173 is in use, trying another one...
+
+  [32m[1mVITE[22m v7.2.7[39m  [2mready in [0m[1m2778[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5174[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m8:47:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mplaywright-report/index.html[22m
+[2m8:47:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mplaywright-report/index.html[22m
+[2m8:47:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mplaywright-report/index.html[22m
+[2m8:50:42 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mplaywright-report/index.html[22m
+[2m9:18:57 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:18:57 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/Auth.tsx[22m
+[2m9:19:10 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:19:10 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/Auth.tsx[22m
+[2m9:19:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:19:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/Auth.tsx[22m
+[2m9:19:31 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:19:31 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/components/MarketTable.tsx[22m
+[2m9:19:47 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:19:47 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/components/MarketRow.tsx[22m
+[2m9:20:02 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:20:02 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/Portfolio.tsx[22m
+[2m9:20:27 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:20:27 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/App.tsx[22m
+[2m8:15:02 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m8:15:02 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m8:19:01 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m8:19:01 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m8:22:02 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m8:22:02 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/Portfolio.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m8:23:12 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m8:23:12 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m8:27:41 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m8:27:41 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/Portfolio.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m8:29:05 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m8:29:05 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m8:29:07 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m8:29:07 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m8:41:09 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/Portfolio.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m8:41:09 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m8:42:54 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m8:42:54 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m8:43:28 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ new dependencies optimized: [33mrecharts[32m[39m
+[2m8:43:28 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32m✨ optimized dependencies changed. reloading[39m
+[2m9:09:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:09:18 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m9:12:45 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:12:45 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/context/AuthContext.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/App.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/Portfolio.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/components/MarketRow.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/components/NewsList.tsx[22m
+[2m9:13:06 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m9:13:06 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/App.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/Portfolio.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/components/MarketRow.tsx, /@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m11:06:31 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m11:06:31 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m
+[2m11:06:31 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/index.css[22m
+[2m11:06:31 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/@fs/C:/Users/apoor/crypto-pulse/src/pages/CoinDetails.tsx[22m

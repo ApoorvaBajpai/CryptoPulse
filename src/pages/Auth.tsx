@@ -51,7 +51,7 @@ export default function Auth() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow w-96">
-        <h2 className="text-2xl font-bold mb-4 text-center">
+        <h2 className="text-2xl font-bold mb-4 text-center text-gray-900 dark:text-white">
           {isLogin ? "Login" : "Sign Up"}
         </h2>
 
@@ -62,7 +62,7 @@ export default function Auth() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full mb-3 px-4 py-2 border rounded"
+          className="w-full mb-3 px-4 py-2 border rounded-xl bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
         />
 
         <input
@@ -70,19 +70,19 @@ export default function Auth() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full mb-4 px-4 py-2 border rounded"
+          className="w-full mb-4 px-4 py-2 border rounded-xl bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition"
         />
 
         <button
           onClick={handleEmailAuth}
-          className="w-full bg-indigo-600 text-white py-2 rounded mb-3"
+          className="w-full bg-indigo-600 text-white py-2 rounded-xl font-medium hover:bg-indigo-700 transition shadow-lg shadow-indigo-100 dark:shadow-indigo-900/20 mb-3"
         >
           {isLogin ? "Login" : "Create Account"}
         </button>
 
         <button
           onClick={handleGoogleAuth}
-          className="w-full border py-2 rounded mb-4"
+          className="w-full border py-2 rounded-xl bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-50 dark:hover:bg-gray-600 transition mb-4"
         >
           Continue with Google
         </button>

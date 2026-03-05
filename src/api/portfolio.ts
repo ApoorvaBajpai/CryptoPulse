@@ -1,36 +1,6 @@
-import { getAuth } from "firebase/auth";
+import { authFetch } from "./base";
 
 const API_BASE = "http://localhost:5000";
-
-async function authFetch(
-    url: string,
-    options: RequestInit = {}
-) {
-    const auth = getAuth();
-    const user = auth.currentUser;
-
-    if (!user) {
-        throw new Error("User not logged in");
-    }
-
-    const token = await user.getIdToken();
-
-    const res = await fetch(url, {
-        ...options,
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-            ...(options.headers || {}),
-        },
-    });
-
-    if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "API error");
-    }
-
-    return res.json();
-}
 
 /* =======================
    Portfolio APIs

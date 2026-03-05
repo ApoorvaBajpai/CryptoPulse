@@ -5,12 +5,9 @@ import { useEffect, useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import CoinDetails from "./pages/CoinDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { getIdToken } from "./context/AuthContext";
-import Portfolio from "./pages/Portfolio";
-
-
-
 import { useAuth } from "./context/AuthContext";
+import Portfolio from "./pages/Portfolio";
+import { authFetch } from "./api/base";
 import NewsPage from "./pages/NewsPage";
 
 
@@ -18,7 +15,6 @@ export default function App() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [coins, setCoins] = useState<any[]>([]);
-  const [filter, setFilter] = useState<"all" | "stable" | "layer1" | "alt">("all");
   const [sort, setSort] = useState<"market_cap" | "price" | "volume_24h" | "rank">("market_cap");
   const [order, setOrder] = useState<"asc" | "desc">("desc");
 
@@ -33,7 +29,6 @@ export default function App() {
       let url = "http://localhost:5000/api/coins/listings-with-info";
       const params = new URLSearchParams();
 
-      if (filter !== "all") params.append("filter", filter);
       if (sort !== "rank") {
         params.append("sort", sort);
         params.append("order", order);
@@ -41,20 +36,12 @@ export default function App() {
 
       if (params.toString()) url += `?${params.toString()}`;
 
-      const token = await getIdToken();
-
-      const res = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const data = await res.json();
+      const data = await authFetch(url);
       setCoins(data);
     };
 
     fetchCoins().catch(err => console.error("API error:", err));
-  }, [filter, sort, order, user]);
+  }, [sort, order, user]);
 
 
   useEffect(() => {
@@ -67,10 +54,6 @@ export default function App() {
     }
   }, [darkMode]);
 
-  const filterButtonClass = (value: string) =>
-    filter === value
-      ? "px-4 py-1.5 bg-indigo-600 text-white rounded-full text-sm font-medium shadow-sm"
-      : "px-4 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm font-medium hover:bg-gray-200";
 
   return (
     <Routes>
@@ -100,9 +83,6 @@ export default function App() {
                   >
                     Market
                   </button>
-                  <button className="px-6 py-2 bg-white border rounded-xl shadow-sm font-medium hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
-                    Categories
-                  </button>
                   <button
                     onClick={() => navigate("/portfolio")}
                     className={`px-6 py-2 rounded-xl shadow-sm font-medium transition ${window.location.pathname === '/portfolio' ? 'bg-indigo-600 text-white' : 'bg-white border hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700'}`}
@@ -118,17 +98,11 @@ export default function App() {
                 </div>
 
                 <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-md p-8 border border-gray-100 dark:border-gray-700">
-                  <h2 className="text-xl font-semibold mb-1">Market</h2>
-                  <p className="text-gray-500 text-sm mb-6">
+                  <h2 className="text-xl font-semibold mb-1 text-gray-900 dark:text-white">Market</h2>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
                     Click a row for full details page.
                   </p>
 
-                  <div className="flex gap-3 mb-6">
-                    <button onClick={() => setFilter("all")} className={filterButtonClass("all")}>All</button>
-                    <button onClick={() => setFilter("stable")} className={filterButtonClass("stable")}>Stable</button>
-                    <button onClick={() => setFilter("layer1")} className={filterButtonClass("layer1")}>Layer 1</button>
-                    <button onClick={() => setFilter("alt")} className={filterButtonClass("alt")}>Alt</button>
-                  </div>
 
                   <MarketTable coins={coins} />
                 </div>

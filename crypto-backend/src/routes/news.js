@@ -1,5 +1,6 @@
 const express = require("express");
 const axios = require("axios");
+const { newsCache } = require("../services/cacheService");
 const router = express.Router();
 
 /**
@@ -13,8 +14,17 @@ const router = express.Router();
 router.get("/", async (req, res) => {
     try {
         const { symbols, limit, search } = req.query;
-        let marketauxSymbols = "";
 
+        // Build a deterministic cache key from the query params
+        const cacheKey = `news:${symbols || "global"}:${limit || 10}:${search || ""}`;
+        const cached = newsCache.get(cacheKey);
+        if (cached) {
+            res.set("X-Cache", "HIT");
+            res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=600");
+            return res.json(cached);
+        }
+
+        let marketauxSymbols = "";
         if (symbols) {
             marketauxSymbols = symbols.split(",").map(s => `CC:${s.trim().toUpperCase()}`).join(",");
         }
@@ -54,6 +64,9 @@ router.get("/", async (req, res) => {
             };
         });
 
+        newsCache.set(cacheKey, news, 5 * 60 * 1000); // 5 minute TTL
+        res.set("X-Cache", "MISS");
+        res.set("Cache-Control", "public, max-age=300, stale-while-revalidate=600");
         res.json(news);
     } catch (err) {
         console.error("Marketaux API Error:", err.response?.data || err.message);

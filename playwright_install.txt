@@ -1,0 +1,2 @@
+Failed to install browsers
+Error: Invalid installation targets: ''. Expecting one of: android, bidi-chromium, chrome, chrome-beta, chrome-for-testing, chromium, chromium-headless-shell, chromium-tip-of-tree, chromium-tip-of-tree-headless-shell, ffmpeg, firefox, firefox-beta, msedge, msedge-beta, msedge-dev, webkit, webkit-wsl, winldd

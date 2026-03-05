@@ -47,7 +47,7 @@ export default function MarketRow({ coin, rank }: Props) {
   return (
     <tr onClick={() => navigate(`/coin/${coin.id}`)}
       className="hover:bg-gray-50 dark:hover:bg-gray-700 transition cursor-pointer group">
-      <td className="px-4 py-3 text-sm">#{rank}</td>
+      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">#{rank}</td>
 
       <td className="px-4 py-3">
         <div className="flex items-center gap-3">
@@ -79,12 +79,6 @@ export default function MarketRow({ coin, rank }: Props) {
         {format(coin.volume_24h)}
       </td>
 
-      {/* Sparkline Placeholder */}
-      <td className="px-4 py-3">
-        <div className="w-24 h-6 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden relative">
-          <div className={`absolute inset-y-0 left-0 ${coin.percent_change_24h > 0 ? "bg-green-100" : "bg-red-100"} w-3/4 opacity-50`}></div>
-        </div>
-      </td>
 
       <td className="px-4 py-3">
         {isBuying ? (
@@ -93,7 +87,7 @@ export default function MarketRow({ coin, rank }: Props) {
               type="number"
               value={qty}
               onChange={(e) => setQty(e.target.value)}
-              className="w-16 px-2 py-1 text-sm border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+              className="w-16 px-2 py-1 text-sm border rounded-lg bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none"
               placeholder="Qty"
               min="0"
               step="any"
@@ -108,7 +102,7 @@ export default function MarketRow({ coin, rank }: Props) {
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); setIsBuying(false); }}
-              className="text-gray-400 hover:text-gray-600 p-1 font-bold"
+              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 p-1 font-bold"
             >
               ✕
             </button>
@@ -119,7 +113,7 @@ export default function MarketRow({ coin, rank }: Props) {
               e.stopPropagation();
               setIsBuying(true);
             }}
-            className="px-4 py-1.5 text-sm font-medium border border-indigo-200 text-indigo-600 rounded-xl hover:bg-indigo-50 transition opacity-0 group-hover:opacity-100"
+            className="px-4 py-1.5 text-sm font-medium border border-indigo-200 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition opacity-0 group-hover:opacity-100"
           >
             Buy
           </button>

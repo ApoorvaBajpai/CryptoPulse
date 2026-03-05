@@ -29,7 +29,7 @@ export default function Header({
         </div>
 
         <div className="text-xl font-semibold text-gray-800 dark:text-gray-200">
-          Markets · Categories · Portfolio
+          Markets · Portfolio · News
         </div>
       </div>
 
