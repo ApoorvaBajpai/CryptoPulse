@@ -271,7 +271,7 @@ export default function CoinDetails() {
                                             fontSize: '12px',
                                         }}
                                         labelFormatter={(t) => new Date(t).toLocaleString()}
-                                        formatter={(value: number | undefined) => [`$${(value ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'Price']}
+                                        formatter={((value: number) => [`$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 'Price']) as any}
                                     />
                                     <Area
                                         type="monotone"
