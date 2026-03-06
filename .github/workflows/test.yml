@@ -23,27 +23,9 @@ jobs:
       - run: npm run build
 
 
-  playwright-test:
-    name: Playwright test
+  backend-tests:
+    name: Backend Tests
     runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - run: npm install
-      - run: npx playwright install --with-deps
-      - run: npx playwright test
-
-
-  test-comprehensive:
-    name: Test comprehensive
-    runs-on: ubuntu-latest
-    needs: [build, playwright-test]
 
     defaults:
       run:
@@ -57,4 +39,21 @@ jobs:
           node-version: 20
 
       - run: npm install
-      - run: npm run lint
+      - run: npx jest --forceExit --detectOpenHandles
+
+
+  playwright-test:
+    name: Playwright Tests
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
