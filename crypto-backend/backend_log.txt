@@ -1,0 +1,7 @@
+
+> crypto-backend@1.0.0 start
+> node src/index.js 
+
+[dotenv@17.2.3] injecting env (4) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Server running on port 5000
+✅ MongoDB connected

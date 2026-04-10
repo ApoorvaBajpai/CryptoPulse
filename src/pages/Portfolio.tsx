@@ -62,10 +62,10 @@ export default function Portfolio() {
       return;
     }
 
-    const loadPortfolio = async () => {
+    const loadPortfolio = async (refresh: boolean = false) => {
       try {
         setIsStale(false);
-        const data = await getPortfolio();
+        const data = await getPortfolio(refresh);
         setPortfolio(data);
       } catch (err: any) {
         setError(err.message || "Failed to load portfolio");
@@ -76,13 +76,20 @@ export default function Portfolio() {
     };
 
     loadPortfolio();
+
+    const interval = setInterval(() => {
+      console.log("🔄 Auto-refreshing portfolio holdings...");
+      loadPortfolio(true);
+    }, 60000);
+
+    return () => clearInterval(interval);
   }, [authLoading, user, reload]);
 
   useEffect(() => {
     if (!user) return;
-    const loadPrices = async () => {
+    const loadPrices = async (refresh: boolean = false) => {
       try {
-        const data = await getMarketPrices();
+        const data = await getMarketPrices(refresh);
         const map: Record<string, number> = {};
         data.forEach((c: any) => { map[c.symbol] = c.price; });
         setPriceMap(map);
@@ -92,6 +99,13 @@ export default function Portfolio() {
       }
     };
     loadPrices();
+
+    const interval = setInterval(() => {
+      console.log("🔄 Auto-refreshing market prices for portfolio...");
+      loadPrices(true);
+    }, 60000);
+
+    return () => clearInterval(interval);
   }, [user, reload]); // Added reload here to refresh prices when buy/sell happens since it clears cache
 
   const handleAction = async (coin: Holding) => {

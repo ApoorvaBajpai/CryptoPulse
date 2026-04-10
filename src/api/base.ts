@@ -9,7 +9,8 @@ const pendingRevalidations = new Set<string>();
 
 export async function authFetch(
     url: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    skipCache: boolean = false
 ) {
     const auth = getAuth();
     const user = auth.currentUser;
@@ -21,7 +22,7 @@ export async function authFetch(
     // Only cache GET requests
     const isGet = !options.method || options.method.toUpperCase() === "GET";
 
-    if (isGet) {
+    if (isGet && !skipCache) {
         const cached = await cacheManager.get(url);
         if (cached) {
             // If the L1 cache says data is stale, trigger a background revalidation

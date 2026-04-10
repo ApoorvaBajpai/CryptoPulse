@@ -25,7 +25,7 @@ export default function App() {
   useEffect(() => {
     if (!user) return;
 
-    const fetchCoins = async () => {
+    const fetchCoins = async (refresh: boolean = false) => {
       let url = "http://localhost:5000/api/coins/listings-with-info";
       const params = new URLSearchParams();
 
@@ -36,11 +36,20 @@ export default function App() {
 
       if (params.toString()) url += `?${params.toString()}`;
 
-      const data = await authFetch(url);
+      // Bypassing cache if refresh is true
+      const data = await authFetch(url, {}, refresh);
       setCoins(data);
     };
 
     fetchCoins().catch(err => console.error("API error:", err));
+
+    // Polling every 1 minute (60,000 ms)
+    const interval = setInterval(() => {
+      console.log("🔄 Auto-refreshing market data...");
+      fetchCoins(true).catch(err => console.error("Polling error:", err));
+    }, 60000);
+
+    return () => clearInterval(interval);
   }, [sort, order, user]);
 
 
