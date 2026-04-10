@@ -39,19 +39,43 @@ export default function CoinDetails() {
 
     useEffect(() => {
         if (!id) return;
-        getCoinDetails(id)
-            .then(data => { setCoin(data); setLoading(false); })
-            .catch(err => { console.error("Failed to fetch coin details", err); setLoading(false); });
+
+        const fetchData = (refresh: boolean = false) => {
+            getCoinDetails(id, refresh)
+                .then(data => { setCoin(data); setLoading(false); })
+                .catch(err => { console.error("Failed to fetch coin details", err); setLoading(false); });
+        };
+
+        fetchData();
+
+        const interval = setInterval(() => {
+            console.log(`🔄 Auto-refreshing coin details for ${id}...`);
+            fetchData(true);
+        }, 60000);
+
+        return () => clearInterval(interval);
     }, [id]);
 
     useEffect(() => {
         if (!id) return;
-        setChartLoading(true);
-        setChartError("");
-        getCoinChart(id, chartDays)
-            .then(data => { setChartData(data.prices || []); })
-            .catch(err => { console.error("Chart fetch failed:", err); setChartError("Chart data unavailable"); setChartData([]); })
-            .finally(() => setChartLoading(false));
+
+        const fetchChart = (refresh: boolean = false) => {
+            setChartLoading(true);
+            setChartError("");
+            getCoinChart(id, chartDays, refresh)
+                .then(data => { setChartData(data.prices || []); })
+                .catch(err => { console.error("Chart fetch failed:", err); setChartError("Chart data unavailable"); setChartData([]); })
+                .finally(() => setChartLoading(false));
+        };
+
+        fetchChart();
+
+        const interval = setInterval(() => {
+            console.log(`🔄 Auto-refreshing chart data for ${id}...`);
+            fetchChart(true);
+        }, 60000);
+
+        return () => clearInterval(interval);
     }, [id, chartDays]);
 
     if (loading) {

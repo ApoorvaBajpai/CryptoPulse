@@ -6,8 +6,8 @@ const API_BASE = "http://localhost:5000";
    Portfolio APIs
 ======================= */
 
-export const getPortfolio = () =>
-    authFetch(`${API_BASE}/api/portfolio`);
+export const getPortfolio = (skipCache: boolean = false) =>
+    authFetch(`${API_BASE}/api/portfolio`, {}, skipCache);
 
 
 export const buyCoin = (
